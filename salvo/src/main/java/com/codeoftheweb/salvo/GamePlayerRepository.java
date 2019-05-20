@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface GameRepository extends JpaRepository<Game, Long> {
+public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long>{
 
-    List<Game> findByCreationDate(LocalDateTime creationDate);
+
 }
+
+
