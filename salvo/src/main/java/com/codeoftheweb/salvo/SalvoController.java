@@ -46,9 +46,9 @@ public class SalvoController {
         if(optionalGamePlayer.isPresent()){
             return optionalGamePlayer.get().gamePlayerDTO();
         }else{
-            Map<String,Object> respuest = new HashMap<>();
-            respuest.put("error", "game player o encotrado");
-            return respuest;
+            Map<String,Object> answer = new HashMap<>();
+            answer.put("error", "game player no encontrado");
+            return answer;
         }
     }
 
