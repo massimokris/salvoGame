@@ -44,6 +44,14 @@ public class Game {
         return gamePlayers;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
@@ -56,5 +64,6 @@ public class Game {
         dto.put("gamePlayers", this.gamePlayers.stream().map(GamePlayer::gamePlayerDTO));
         return dto;
     }
+
 }
 

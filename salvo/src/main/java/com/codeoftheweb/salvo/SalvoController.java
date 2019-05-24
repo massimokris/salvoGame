@@ -44,7 +44,7 @@ public class SalvoController {
     public Map<String, Object> findGamePlayer(@PathVariable Long gamePlayerId) {
         Optional<GamePlayer>  optionalGamePlayer = gamePlayerRepository.findById(gamePlayerId);
         if(optionalGamePlayer.isPresent()){
-            return optionalGamePlayer.get().gamePlayerDTO();
+            return optionalGamePlayer.get().gameViewDTO();
         }else{
             Map<String,Object> answer = new HashMap<>();
             answer.put("error", "game player no encontrado");

@@ -50,12 +50,12 @@ public class SalvoApplication {
 			GamePlayer gamePlayerFive = new GamePlayer(playerFour, gameTwo, LocalDateTime.now());
 			GamePlayer gamePlayerSix = new GamePlayer(playerSix, gameThree, LocalDateTime.now());
 
-			Ship shipOne = new Ship(ShipType.UNO, new ArrayList<>(Arrays.asList("h1","h2")));
-			Ship shipTwo = new Ship(ShipType.DOS, new ArrayList<>(Arrays.asList("g1","g2")));
-			Ship shipThree = new Ship(ShipType.TRES, new ArrayList<>(Arrays.asList("b1","b2")));
-			Ship shipFour = new Ship(ShipType.TRES, new ArrayList<>(Arrays.asList("u1","u2")));
-			Ship shipFive = new Ship(ShipType.UNO, new ArrayList<>(Arrays.asList("f1","f2")));
-			Ship shipSix = new Ship(ShipType.DOS, new ArrayList<>(Arrays.asList("p1","p2")));
+			Ship shipOne = new Ship(ShipType.CARRIER, new ArrayList<>(Arrays.asList("a1","a2","a3","a4","a5")));
+			Ship shipTwo = new Ship(ShipType.PATROL_BOAT, new ArrayList<>(Arrays.asList("j1","j2")));
+			Ship shipThree = new Ship(ShipType.BATTLESHIP, new ArrayList<>(Arrays.asList("b3","c3","d3","e3")));
+			Ship shipFour = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f1","f2","f3")));
+			Ship shipFive = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f3","g3","h3")));
+			Ship shipSix = new Ship(ShipType.DESTROYER, new ArrayList<>(Arrays.asList("g7","g8","g9")));
 
 			gamePlayerOne.addShip(shipOne);
 			gamePlayerTwo.addShip(shipTwo);
