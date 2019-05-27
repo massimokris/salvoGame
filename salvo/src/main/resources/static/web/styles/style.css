@@ -131,4 +131,11 @@
     background-color: rgba(170,169,173,0.7);
 }
 
+.grid-salvos{
+    inline-block;
+}
 
+.grid-ships{
+inline-block;
+    position: float-left;
+}

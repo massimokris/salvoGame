@@ -1,5 +1,7 @@
 var gamePlayer;
 
+
+
 function paramObj(search) {
   var obj = {};
   var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
@@ -17,10 +19,8 @@ function setLocations(){
 
     for(var i = 0; i < gamePlayer.Ships.length; i++){
 
-        var p = gamePlayer.Ships[i].locations[0][1].toUpperCase().charCodeAt(0);
-
-        var x = +(gamePlayer.Ships[i].locations[0][1]) - 1;
-        var y = gamePlayer.Ships[i].locations[0][0].toUpperCase().charCodeAt(0) - 65;
+        var x = +(gamePlayer.Ships[i].locations[0].slice(1,3)) - 1;
+        var y = gamePlayer.Ships[i].locations[0].slice(0,1).toUpperCase().charCodeAt(0) - 65;
         var type = gamePlayer.Ships[i].type.toLowerCase();
         var w, h, orientation;
 
@@ -46,14 +46,13 @@ function setNames(){
 
     var names = '';
 
-    for(var i = 0; i < gamePlayer.gamePlayers.length; i++){
+    if(gamePlayer.gameId == gamePlayer.gamePlayers[0].gamePlayerId){
 
-        if(gamePlayer.gameId == gamePlayer.gamePlayers[i].gamePlayerId){
-
-            names += gamePlayer.gamePlayers[i].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[i+1].player.email;
-            break;
-        }
+        names += gamePlayer.gamePlayers[0].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[1].player.email;
+    }else{
+        names += gamePlayer.gamePlayers[1].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[0].player.email;
     }
+
 
     return names;
 }
@@ -72,6 +71,7 @@ fetch( "/api/game_view/"+game.Gp, {
     gamePlayer = value;
     setNames();
     loadGrid();
+    createGrid(11, $(".grid-salvos"),"sa")
     document.getElementById("names").innerHTML = setNames();
 
 }).catch(function(error) {
@@ -109,7 +109,7 @@ const loadGrid = function () {
 
     setLocations();
 
-    createGrid(11, $(".grid-ships"))
+    createGrid(11, $(".grid-ships"),"sh")
 
     rotateShips("carrier", 5)
     rotateShips("battleship", 4)
@@ -128,7 +128,7 @@ const loadGrid = function () {
 
 
 //creates the grid structure
-const createGrid = function(size, element){
+const createGrid = function(size, element, id){
 
     let wrapper = document.createElement('DIV')
     wrapper.classList.add('grid-wrapper')
@@ -136,14 +136,14 @@ const createGrid = function(size, element){
     for(let i = 0; i < size; i++){
         let row = document.createElement('DIV')
         row.classList.add('grid-row')
-        row.id =`grid-row${i}`
+        row.id =id+`grid-row${i}`
         wrapper.appendChild(row)
 
         for(let j = 0; j < size; j++){
             let cell = document.createElement('DIV')
             cell.classList.add('grid-cell')
             if(i > 0 && j > 0)
-            cell.id = `${i - 1}${ j - 1}`
+            cell.id = id+`${i - 1}${ j - 1}`
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')

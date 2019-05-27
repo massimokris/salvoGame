@@ -47,6 +47,18 @@ public class Player {
         this.gamePlayers = gamePlayers;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public Map<String, Object> playerDTO(){
 
         Map<String, Object> dto = new LinkedHashMap<>();

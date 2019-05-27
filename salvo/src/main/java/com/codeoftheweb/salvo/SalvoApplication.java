@@ -18,7 +18,7 @@ public class SalvoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository) {
+	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository) {
 		return (args) -> {
 			// save a couple of customers
 			Player playerOne = new Player("Jack");
@@ -50,12 +50,19 @@ public class SalvoApplication {
 			GamePlayer gamePlayerFive = new GamePlayer(playerFour, gameTwo, LocalDateTime.now());
 			GamePlayer gamePlayerSix = new GamePlayer(playerSix, gameThree, LocalDateTime.now());
 
-			Ship shipOne = new Ship(ShipType.CARRIER, new ArrayList<>(Arrays.asList("a1","a2","a3","a4","a5")));
+			Ship shipOne = new Ship(ShipType.CARRIER, new ArrayList<>(Arrays.asList("a10","b10","c10","d10","e10")));
 			Ship shipTwo = new Ship(ShipType.PATROL_BOAT, new ArrayList<>(Arrays.asList("j1","j2")));
 			Ship shipThree = new Ship(ShipType.BATTLESHIP, new ArrayList<>(Arrays.asList("b3","c3","d3","e3")));
 			Ship shipFour = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f1","f2","f3")));
 			Ship shipFive = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f3","g3","h3")));
 			Ship shipSix = new Ship(ShipType.DESTROYER, new ArrayList<>(Arrays.asList("g7","g8","g9")));
+
+			Salvo salvoOne = new Salvo(1, new ArrayList<>(Arrays.asList("a10","b5")));
+			Salvo salvoTwo = new Salvo(2, new ArrayList<>(Arrays.asList("b5","c3")));
+			Salvo salvoThree = new Salvo(3, new ArrayList<>(Arrays.asList("h3","h4")));
+			Salvo salvoFour = new Salvo(4, new ArrayList<>(Arrays.asList("e3","d8")));
+			Salvo salvoFive = new Salvo(5, new ArrayList<>(Arrays.asList("a3","h10")));
+			Salvo salvoSix = new Salvo(6, new ArrayList<>(Arrays.asList("b1","g4")));
 
 			gamePlayerOne.addShip(shipOne);
 			gamePlayerTwo.addShip(shipTwo);
@@ -63,6 +70,13 @@ public class SalvoApplication {
 			gamePlayerFour.addShip(shipFour);
 			gamePlayerFive.addShip(shipFive);
 			gamePlayerSix.addShip(shipSix);
+
+			gamePlayerOne.addSalvo(salvoOne);
+			gamePlayerTwo.addSalvo(salvoTwo);
+			gamePlayerThree.addSalvo(salvoThree);
+			gamePlayerFour.addSalvo(salvoFour);
+			gamePlayerFive.addSalvo(salvoFive);
+			gamePlayerSix.addSalvo(salvoSix);
 
 			gamePlayerRepository.save(gamePlayerOne);
 			gamePlayerRepository.save(gamePlayerTwo);

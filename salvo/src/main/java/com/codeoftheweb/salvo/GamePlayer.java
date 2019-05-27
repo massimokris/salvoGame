@@ -29,9 +29,17 @@ public class GamePlayer {
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<Ship> ships = new HashSet<>();
 
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Set<Salvo> salvos = new HashSet<>();
+
     public void addShip(Ship ship){
         ship.setGamePlayer(this);
         ships.add(ship);
+    }
+
+    public void addSalvo(Salvo salvo){
+        salvo.setGamePlayer(this);
+        salvos.add(salvo);
     }
 
     public GamePlayer() {}
@@ -71,6 +79,22 @@ public class GamePlayer {
         this.game = game;
     }
 
+    public Set<Ship> getShips() {
+        return ships;
+    }
+
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
+
+    public Set<Salvo> getSalvos() {
+        return salvos;
+    }
+
+    public void setSalvos(Set<Salvo> salvos) {
+        this.salvos = salvos;
+    }
+
     public Map<String, Object> gamePlayerDTO(){
 
         Map<String, Object> dto = new LinkedHashMap<>();
@@ -87,6 +111,7 @@ public class GamePlayer {
         dto.put("creationDate", this.getGame().getCreationDate());
         dto.put("gamePlayers", this.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("Ships", this.ships.stream().map(Ship::shipDTO));
+        dto.put("Salvos", this.game.getGamePlayers().stream().flatMap(sgp -> sgp.getSalvos().stream().map(Salvo::salvoDTO)));
         return dto;
     }
 }
