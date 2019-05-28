@@ -101,6 +101,7 @@ public class GamePlayer {
         dto.put("gamePlayerId", this.id);
         dto.put("joinDate", this.joinDate);
         dto.put("player", this.player.playerDTO());
+
         return dto;
     }
 
