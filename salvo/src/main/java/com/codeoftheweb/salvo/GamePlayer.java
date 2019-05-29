@@ -95,13 +95,17 @@ public class GamePlayer {
         this.salvos = salvos;
     }
 
+    public Score getScoreGamePlayer (){
+        return this.player.getGameScore(this.game);
+    }
+
     public Map<String, Object> gamePlayerDTO(){
 
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("gamePlayerId", this.id);
         dto.put("joinDate", this.joinDate);
         dto.put("player", this.player.playerDTO());
-
+        dto.put("scores", this.getScoreGamePlayer());
         return dto;
     }
 

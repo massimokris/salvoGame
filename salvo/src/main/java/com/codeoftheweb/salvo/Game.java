@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Game {
@@ -22,7 +23,7 @@ public class Game {
     Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<Score> scores = new HashSet<>();
+    Set<Score> scores;
 
     public void addGamePlayer(GamePlayer gamePlayer){
 
@@ -75,6 +76,12 @@ public class Game {
 
     public void setScores(Set<Score> scores) {
         this.scores = scores;
+    }
+
+    public void addScore (Score score){
+
+        score.setGame(this);
+        scores.add(score);
     }
 }
 

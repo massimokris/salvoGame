@@ -18,14 +18,15 @@ public class SalvoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository) {
+	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository) {
 		return (args) -> {
 			// save a couple of customers
+
 			Player playerOne = new Player("Jack");
 			Player playerTwo = new Player("Chloe");
 			Player playerThree = new Player("Kim");
 			Player playerFour = new Player("David");
-			Player playerFive = new Player("Michelle");
+			Player playerFive = new Player("Massimo");
 			Player playerSix = new Player("Massimo");
 
 			playerRepository.save(playerOne);
@@ -42,6 +43,20 @@ public class SalvoApplication {
 			gameRepository.save(gameOne);
 			gameRepository.save(gameTwo);
 			gameRepository.save(gameThree);
+
+			Score scoreOne = new Score(playerOne, gameOne, 1, LocalDateTime.now());
+			Score scoreTwo = new Score(playerOne, gameOne, 1, LocalDateTime.now());
+			Score scoreThree = new Score(playerThree, gameOne, 1, LocalDateTime.now());
+			Score scoreFour = new Score(playerFour, gameOne, 1, LocalDateTime.now());
+			Score scoreFive = new Score(playerFive, gameOne, 1, LocalDateTime.now());
+			Score scoreSix = new Score(playerSix, gameOne, 0, LocalDateTime.now());
+
+			scoreRepository.save(scoreOne);
+			scoreRepository.save(scoreTwo);
+			scoreRepository.save(scoreThree);
+			scoreRepository.save(scoreFour);
+			scoreRepository.save(scoreFive);
+			scoreRepository.save(scoreSix);
 
 			GamePlayer gamePlayerOne = new GamePlayer(playerOne, gameOne, LocalDateTime.now());
 			GamePlayer gamePlayerTwo = new GamePlayer(playerTwo, gameOne, LocalDateTime.now());

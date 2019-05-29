@@ -28,10 +28,12 @@ public class Score {
 
     public Score() {}
 
-    public Score(Game game, float score){
+    public Score(Player player, Game game, float score, LocalDateTime finishDate){
 
+        this.player = player;
         this.game = game;
         this.score = score;
+        this.finishDate = finishDate;
     }
 
     public long getId() {
@@ -77,10 +79,7 @@ public class Score {
     public Map<String, Object> scoreDTO(){
 
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("scoreId", this.id);
-        dto.put("game", this.game);
-        dto.put("playerId", this.player.getGamePlayers()
-        dto.put("Salvos", this.game.getGamePlayers().stream().flatMap(sgp -> sgp.getSalvos().stream().map(Salvo::salvoDTO)));
+
         dto.put("score", this.score);
         return dto;
     }

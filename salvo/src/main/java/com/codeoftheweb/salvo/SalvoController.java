@@ -24,6 +24,15 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
+    @Autowired
+    private ScoreRepository scoreRpository;
+
+    @Autowired
+    private ShipRepository shipRepository;
+
+    @Autowired
+    private SalvoRepository salvoRepository;
+
    /* @RequestMapping("/players")
     public List<Player> getPlayers(){
 

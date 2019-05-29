@@ -17,11 +17,11 @@ public class Player {
     private long id;
     private String userName;
 
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<GamePlayer> gamePlayers;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<Score> scores = new HashSet<>();
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Set<Score> scores;
 
     public void addGamePlayer(GamePlayer gamePlayer){
 
@@ -67,8 +67,20 @@ public class Player {
         return scores;
     }
 
+
+    public Score getGameScore (Game game){
+
+        return scores.stream().filter(score -> score.getGame().getId() == game.getId()).findAny().orElse(null);
+    }
+
     public void setScores(Set<Score> scores) {
         this.scores = scores;
+    }
+
+    public void addScore (Score score){
+
+        score.setPlayer(this);
+        scores.add(score);
     }
 
     public Map<String, Object> playerDTO(){
@@ -76,6 +88,8 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("email", this.getUserName());
+        double total = this.getScores().stream().mapToDouble(Score::getScore).sum();
+        dto.put("score", total);
         return dto;
     }
 }
