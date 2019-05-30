@@ -88,8 +88,22 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("email", this.getUserName());
+        return dto;
+    }
+
+    public Map<String, Object> playerStatisticsDTO(){
+
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", this.id);
+        dto.put("email", this.getUserName());
         double total = this.getScores().stream().mapToDouble(Score::getScore).sum();
+        double won = this.getScores().stream().filter(score -> score.getScore() == 3).count();
+        double lost = this.getScores().stream().filter(score -> score.getScore() == 0).count();
+        double tied = this.getScores().stream().filter(score -> score.getScore() == 1).count();
         dto.put("score", total);
+        dto.put("won", won);
+        dto.put("lost", lost);
+        dto.put("tied", tied);
         return dto;
     }
 }

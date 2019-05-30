@@ -105,7 +105,13 @@ public class GamePlayer {
         dto.put("gamePlayerId", this.id);
         dto.put("joinDate", this.joinDate);
         dto.put("player", this.player.playerDTO());
-        dto.put("scores", this.getScoreGamePlayer());
+        if(this.getScoreGamePlayer() != null){
+            dto.put("scores", this.getScoreGamePlayer().getScore());
+        }else{
+
+            dto.put("scores", this.getScoreGamePlayer());
+        }
+
         return dto;
     }
 

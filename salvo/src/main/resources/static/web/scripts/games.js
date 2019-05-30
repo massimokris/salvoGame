@@ -4,13 +4,13 @@ function gamesList(){
 
     var list = '';
 
-    for(var i = 0; i < gamesJs.length; i++){
+    for(var i = 0; i < gamesJs.games.length; i++){
 
-        list += "<li> Game: "+gamesJs[i].gameId+" Date: "+gamesJs[i].creationDate+"<ol>";
+        list += "<li> Game: "+gamesJs.games[i].gameId+" Date: "+gamesJs.games[i].creationDate+"<ol>";
 
-        for(var j = 0; j <gamesJs[i].gamePlayers.length; j++){
+        for(var j = 0; j <gamesJs.games[i].gamePlayers.length; j++){
 
-            list += "<li>"+gamesJs[i].gamePlayers[j].player.email+"</li>";
+            list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"</li>";
         }
 
         list += "</ol></li>";
@@ -19,88 +19,28 @@ function gamesList(){
     return list;
 }
 
-function totalScore(x){
-
-    var list = x;
-    var total = 0;
-
-    for(var i = 0; i < list.length; i++){
-
-        total += list[i];
-    }
-
-    return total;
-}
-
-function totalWon(x){
-
-    var list = x;
-    var total = 0;
-
-    for(var i = 0; i < list.length; i++){
-
-        if(list[i] == 3){
-
-            total ++;
-        }
-    }
-
-    return total;
-}
-
-function totalLost(x){
-
-    var list = x;
-    var total = 0;
-
-    for(var i = 0; i < list.length; i++){
-
-        if(list[i] == 0){
-
-            total ++;
-        }
-    }
-
-    return total;
-}
-
-function totalTied(x){
-
-    var list = x;
-    var total = 0;
-
-    for(var i = 0; i < list.length; i++){
-
-        if(list[i] == 1){
-
-            total ++;
-        }
-    }
-
-    return total;
-}
-
 function statisticsTable(){
 
     var table = '<tr> <th>Name</th> <th>Total</th> <th>Won</th> <th>Lost</th> <th>Tied</th></tr>';
     var list = [];
     var score, won, lost, tied;
 
-    for(var i = 0; i < gamesJs.length; i++){
+    for(var i = 0; i < gamesJs.leaderboard.length; i++){
 
-            for(var j = 0; j < gamesJs[i].gamePlayers.length; j++){
+            //for(var j = 0; j < gamesJs[i].gamePlayers.length; j++){
 
-                if(!(list.includes(gamesJs[i].gamePlayers[j].player.email))){
+                if(!(list.includes(gamesJs.leaderboard[i].email))){
 
-                    score = totalScore(gamesJs[i].scores);
-                    won = totalWon(gamesJs[i].scores);
-                    tied = totalTied(gamesJs[i].scores);
-                    lost = totalLost(gamesJs[i].scores);
-                    table += '<tr><td>'+gamesJs[i].gamePlayers[j].player.email+
+                    score = gamesJs.leaderboard[i].score;
+                    won = gamesJs.leaderboard[i].won;
+                    tied = gamesJs.leaderboard[i].tied;
+                    lost = gamesJs.leaderboard[i].lost;
+
+                    table += '<tr><td>'+gamesJs.leaderboard[i].email+
                     '</td><td>'+score+'</td><td>'+won+'</td><td>'+lost+'</td><td>'+tied+'</td></tr>';
-                    list += gamesJs[i].gamePlayers[j].player.email;
+                    list += gamesJs.leaderboard[i].email;
                 }
-            }
+            //}
         }
 
     return table;
@@ -119,7 +59,6 @@ fetch( "/api/games", {
 
     gamesJs = value;
     document.getElementById("gameList").innerHTML = gamesList();
-    playerList();
     document.getElementById("gameTable").innerHTML = statisticsTable();
     totalScore();
     totalWon();

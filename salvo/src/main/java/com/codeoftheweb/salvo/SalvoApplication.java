@@ -44,10 +44,10 @@ public class SalvoApplication {
 			gameRepository.save(gameTwo);
 			gameRepository.save(gameThree);
 
-			Score scoreOne = new Score(playerOne, gameOne, 1, LocalDateTime.now());
-			Score scoreTwo = new Score(playerOne, gameOne, 1, LocalDateTime.now());
+			Score scoreOne = new Score(playerOne, gameOne, 3, LocalDateTime.now());
+			Score scoreTwo = new Score(playerOne, gameOne, 3, LocalDateTime.now());
 			Score scoreThree = new Score(playerThree, gameOne, 1, LocalDateTime.now());
-			Score scoreFour = new Score(playerFour, gameOne, 1, LocalDateTime.now());
+			Score scoreFour = new Score(playerFour, gameOne, 3, LocalDateTime.now());
 			Score scoreFive = new Score(playerFive, gameOne, 1, LocalDateTime.now());
 			Score scoreSix = new Score(playerSix, gameOne, 0, LocalDateTime.now());
 

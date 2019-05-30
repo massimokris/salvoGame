@@ -40,13 +40,21 @@ public class SalvoController {
     }*/
 
     @RequestMapping("/games")
-    public List<Map<String, Object>> getGames(){
+    public Map<String, Object> getGames(){
 
-        return gameRepository
+        Map<String,Object> dto = new HashMap<>();
+
+        dto.put("games", gameRepository
                 .findAll() //games
                 .stream()
                 .map(Game::gameDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        dto.put("leaderboard", playerRepository
+                .findAll() //games
+                .stream()
+                .map(Player::playerStatisticsDTO)
+                .collect(Collectors.toList()));
+        return dto;
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
