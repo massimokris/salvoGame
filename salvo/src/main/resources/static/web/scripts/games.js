@@ -1,4 +1,6 @@
 var gamesJs;
+var username = document.getElementById("username");
+var password = document.getElementById("password");
 
 function gamesList(){
 
@@ -46,43 +48,79 @@ function statisticsTable(){
     return table;
 }
 
-fetch( "/api/games", {
-}).then(function(games) {
+function fetchGames(){
 
-    if (games.ok) {
+    fetch( "/api/games", {
+    }).then(function(games) {
 
-        return games.json();
-    }
+        if (games.ok) {
 
-    throw new Error(games.statusText);
-}).then(function(value) {
+            return games.json();
+        }
 
-    gamesJs = value;
-    document.getElementById("gameList").innerHTML = gamesList();
-    document.getElementById("gameTable").innerHTML = statisticsTable();
-    totalScore();
-    totalWon();
-    totalLost();
-    totalTied();
+        throw new Error(games.statusText);
+    }).then(function(value) {
 
-}).catch(function(error) {
+        gamesJs = value;
+        document.getElementById("gameList").innerHTML = gamesList();
+        document.getElementById("gameTable").innerHTML = statisticsTable();
 
-    console.log( "Request failed: "+ error.message );
-});
+    }).catch(function(error) {
 
-function login(evt) {
-  evt.preventDefault();
-  var form = evt.target.form;
-  $.post("/api/players",
-         { name: form["username"].value,
-           pwd: form["password"].value })
-   .done()
+        console.log( "Request failed: "+ error.message );
+    });
+}
+
+fetchGames();
+
+function showForm(){
+
+    document.getElementById('login-form').style.display="none";
+    document.getElementById('logout-form').style.display="block";
+}
+
+function hideForm(){
+
+    document.getElementById('login-form').style.display="block";
+    document.getElementById('logout-form').style.display="none";
+}
+
+function login() {
+
+  $.post("/api/login",
+         { username: username.value,
+           password: password.value })
+   .done(function(){
+
+        fetchGames();
+        showForm();
+   })
    .fail();
 }
 
-function logout(evt) {
-  evt.preventDefault();
+function signup() {
+
+  $.post("/api/players",
+         { username: username,
+           password: password })
+   .done(function(){
+
+        login();
+        fetchGames();
+        showForm();
+   })
+   .fail();
+}
+
+function logout() {
+
   $.post("/api/logout")
-   .done()
+   .done(function(){
+
+        username.value.innerHTML = " ";
+        password.value.innerHTML = " ";
+        fetchGames();
+        hideForm();
+   })
    .fail();
 }

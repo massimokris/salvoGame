@@ -19,32 +19,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 @SpringBootApplication
 public class SalvoApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SalvoApplication.class, args);
 	}
 
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository) {
 		return (args) -> {
 			// save a couple of customers
 
-			Player playerOne = new Player("Jack", "1005map");
-			Player playerTwo = new Player("Chloe", "map*");
-			Player playerThree = new Player("Kim", "1005");
-			Player playerFour = new Player("David", "map");
-			Player playerFive = new Player("Massimo", "13167894");
-			Player playerSix = new Player("Massimo", "massimo");
+			Player playerOne = new Player("Jack", passwordEncoder.encode("1005map"));
+			Player playerTwo = new Player("Chloe", passwordEncoder.encode("map*"));
+			Player playerThree = new Player("Kim", passwordEncoder.encode("1005"));
+			Player playerFour = new Player("David", passwordEncoder.encode("map"));
+			Player playerFive = new Player("Massimo", passwordEncoder.encode("13167894"));
+			Player playerSix = new Player("Massimo", passwordEncoder.encode("massimo"));
 
 			playerRepository.save(playerOne);
 			playerRepository.save(playerTwo);
@@ -128,7 +129,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder passwordEncoder(){
-		return new BCryptPasswordEncoder(4);
+		return new BCryptPasswordEncoder();
 	}
 
 
@@ -138,10 +139,10 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 			Player player = playerRepository.findByUserName(userName);
 			if (player != null) {
 				if (player.getUserName().equals("massimo")) {
-					return new User(player.getUserName(), passwordEncoder().encode(player.getPassword()),
+					return new User(player.getUserName(), player.getPassword(),
 							AuthorityUtils.createAuthorityList("ADMIN"));
 				}else {
-					return new User(player.getUserName(), passwordEncoder().encode(player.getPassword()),
+					return new User(player.getUserName(), player.getPassword(),
 							AuthorityUtils.createAuthorityList("USER"));
 				}
 			} else {
@@ -171,7 +172,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin()
 				.usernameParameter("username")
 				.passwordParameter("password")
-				.loginPage("/api/login");
+				.loginPage("/api/login").permitAll();
+
 		http.logout().logoutUrl("/api/logout");
 
 		// turn off checking for CSRF tokens

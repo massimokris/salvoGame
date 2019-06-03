@@ -1,7 +1,5 @@
 var gamePlayer;
 
-
-
 function paramObj(search) {
   var obj = {};
   var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
@@ -46,7 +44,7 @@ function setNames(){
 
     var names = '';
 
-    if(gamePlayer.gameId == gamePlayer.gamePlayers[0].gamePlayerId){
+    if(game == gamePlayer.gamePlayers[0].gamePlayerId){
 
         names += gamePlayer.gamePlayers[0].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[1].player.email;
     }else{

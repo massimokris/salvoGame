@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="UTF-8">
 
+        <!--JQUERY-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
         <title>Salvo</title>
 
     </head>
@@ -13,18 +16,15 @@
 
         <h1>Salvo</h1>
 
-        <form class="col-12" th:action="@{/api/login}" method="get">
-            <div class="form-group" id="userName-group">
-                <input type="text" class="form-control" placeholder="Email" name="username"/>
-            </div>
-            <div class="form-group" id="password-group">
-                <input type="password" class="form-control" placeholder="password" name="password"/>
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i>  Log in </button>
+        <form id="login-form" onsubmit="return false">
+            <label><input type="text" name="username" placeholder="Name" id="username"></label>
+            <label><input type="text" name="password" placeholder="Password" id="password"></label>
+            <button type="submit" class="btn btn-primary" onclick="login()">Login</button>
+            <button type="submit" class="btn btn-primary" onclick="signup()">Sign Up</button>
         </form>
 
-        <form th:action="@{/api/logout}" method="post">
-            <input type="submit" value="Log out"/>
+        <form id="logout-form" onsubmit="return false" style="display: none;">
+            <button type="submit" class="btn btn-primary" onclick="logout()">Log out</button>
         </form>
 
         <ol id="gameList"></ol>
