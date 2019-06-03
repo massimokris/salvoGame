@@ -69,3 +69,20 @@ fetch( "/api/games", {
 
     console.log( "Request failed: "+ error.message );
 });
+
+function login(evt) {
+  evt.preventDefault();
+  var form = evt.target.form;
+  $.post("/api/players",
+         { name: form["username"].value,
+           pwd: form["password"].value })
+   .done()
+   .fail();
+}
+
+function logout(evt) {
+  evt.preventDefault();
+  $.post("/api/logout")
+   .done()
+   .fail();
+}

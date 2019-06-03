@@ -1,12 +1,13 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import sun.misc.resources.Messages;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class SalvoController {
 
     @Autowired
     private SalvoRepository salvoRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
    /* @RequestMapping("/players")
     public List<Player> getPlayers(){
@@ -67,6 +71,21 @@ public class SalvoController {
             answer.put("error", "game player no encontrado");
             return answer;
         }
+    }
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(@RequestParam String userName, @RequestParam String password) {
+
+        if (userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        }
+
+        if (playerRepository.findByUserName(userName) !=  null) {
+            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Player(userName, passwordEncoder.encode(password)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
    /* @RequestMapping("/gamePlayers")
