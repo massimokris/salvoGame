@@ -101,8 +101,8 @@ function login() {
 function signup() {
 
   $.post("/api/players",
-         { username: username,
-           password: password })
+         { username: username.value,
+           password: password.value })
    .done(function(){
 
         login();
@@ -117,8 +117,8 @@ function logout() {
   $.post("/api/logout")
    .done(function(){
 
-        username.value.innerHTML = " ";
-        password.value.innerHTML = " ";
+        username.value = "";
+        password.value = "";
         fetchGames();
         hideForm();
    })

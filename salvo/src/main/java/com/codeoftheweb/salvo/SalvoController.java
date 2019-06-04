@@ -73,18 +73,24 @@ public class SalvoController {
     }
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestParam String userName, @RequestParam String password) {
+    public ResponseEntity<Object> register(@RequestParam String username, @RequestParam String password) {
 
-        if (userName.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        ResponseEntity responseEntity;
+
+        if (username.isEmpty() || password.isEmpty()) {
+
+             responseEntity = new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        }else if (playerRepository.findByUserName(username) !=  null) {
+
+            responseEntity = new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }else{
+
+            playerRepository.save(new Player(username, passwordEncoder.encode(password)));
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         }
 
-        if (playerRepository.findByUserName(userName) !=  null) {
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
-        }
 
-        playerRepository.save(new Player(userName, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return responseEntity;
     }
 
    /* @RequestMapping("/gamePlayers")
