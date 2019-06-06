@@ -1,4 +1,5 @@
 var gamesJs;
+var currentUser;
 var username = document.getElementById("username");
 var password = document.getElementById("password");
 
@@ -62,8 +63,11 @@ function fetchGames(){
     }).then(function(value) {
 
         gamesJs = value;
+        currentUser = gamesJs.player;
         document.getElementById("gameList").innerHTML = gamesList();
         document.getElementById("gameTable").innerHTML = statisticsTable();
+        document.getElementById("current").innerHTML = currentName();
+        showForm();
 
     }).catch(function(error) {
 
@@ -73,17 +77,33 @@ function fetchGames(){
 
 fetchGames();
 
+function currentName(){
+
+    if(currentUser == null){
+
+        document.getElementById('current').style.display="none";
+    }else{
+
+        document.getElementById('current').style.display="block";
+    }
+
+    return currentUser;
+}
+
 function showForm(){
 
-    document.getElementById('login-form').style.display="none";
-    document.getElementById('logout-form').style.display="block";
+    if(currentUser == null){
+
+        document.getElementById('login-form').style.display="block";
+        document.getElementById('logout-form').style.display="none";
+    }else{
+
+        document.getElementById('login-form').style.display="none";
+        document.getElementById('logout-form').style.display="block";
+    }
 }
 
-function hideForm(){
-
-    document.getElementById('login-form').style.display="block";
-    document.getElementById('logout-form').style.display="none";
-}
+showForm();
 
 function login() {
 
@@ -93,7 +113,8 @@ function login() {
    .done(function(){
 
         fetchGames();
-        showForm();
+        //showForm();
+        //location.reload();
    })
    .fail();
 }
@@ -107,7 +128,8 @@ function signup() {
 
         login();
         fetchGames();
-        showForm();
+        //showForm();
+        //location.reload();
    })
    .fail();
 }
@@ -120,7 +142,8 @@ function logout() {
         username.value = "";
         password.value = "";
         fetchGames();
-        hideForm();
+        //showForm();
+        //location.reload();
    })
    .fail();
 }

@@ -3,6 +3,8 @@ package com.codeoftheweb.salvo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,9 +45,17 @@ public class SalvoController {
     }*/
 
     @RequestMapping("/games")
-    public Map<String, Object> getGames(){
+    public Map<String, Object> getGames(Authentication authentication){
 
         Map<String,Object> dto = new HashMap<>();
+
+        if(isGuest(authentication)){
+
+            dto.put("player", null);
+        }else{
+
+            dto.put("player", playerRepository.findByUserName(authentication.getName()).getUserName());
+        }
 
         dto.put("games", gameRepository
                 .findAll() //games
@@ -58,6 +68,10 @@ public class SalvoController {
                 .map(Player::playerStatisticsDTO)
                 .collect(Collectors.toList()));
         return dto;
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
