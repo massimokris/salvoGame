@@ -54,7 +54,7 @@ public class SalvoController {
             dto.put("player", null);
         }else{
 
-            dto.put("player", playerRepository.findByUserName(authentication.getName()).getUserName());
+            dto.put("player", playerRepository.findByUserName(authentication.getName()).playerDTO());
         }
 
         dto.put("games", gameRepository
@@ -75,15 +75,17 @@ public class SalvoController {
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> findGamePlayer(@PathVariable Long gamePlayerId) {
-        Optional<GamePlayer>  optionalGamePlayer = gamePlayerRepository.findById(gamePlayerId);
-        if(optionalGamePlayer.isPresent()){
-            return optionalGamePlayer.get().gameViewDTO();
+    public ResponseEntity<Map<String, Object>> findGamePlayer(@PathVariable Long gamePlayerId, Authentication authentication) {
+        GamePlayer  gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+        Player player = playerRepository.findByUserName(authentication.getName());
+        ResponseEntity message;
+        if(gamePlayer.getPlayer().getId() == player.getId() ){
+            message = new ResponseEntity<>(gamePlayer.gameViewDTO(), HttpStatus.OK);
         }else{
-            Map<String,Object> answer = new HashMap<>();
-            answer.put("error", "game player no encontrado");
-            return answer;
+            message = new ResponseEntity<>(map("unauthorized", "this not is your game"), HttpStatus.UNAUTHORIZED);
         }
+
+        return message;
     }
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
@@ -105,6 +107,14 @@ public class SalvoController {
 
 
         return responseEntity;
+    }
+
+    private Map<String, Object> map(String key, Object value){
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+
+        return map;
     }
 
    /* @RequestMapping("/gamePlayers")

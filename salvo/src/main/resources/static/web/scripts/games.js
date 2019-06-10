@@ -2,6 +2,7 @@ var gamesJs;
 var currentUser;
 var username = document.getElementById("username");
 var password = document.getElementById("password");
+var gameTojoin;
 
 function gamesList(){
 
@@ -13,7 +14,19 @@ function gamesList(){
 
         for(var j = 0; j <gamesJs.games[i].gamePlayers.length; j++){
 
-            list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"</li>";
+            if(gamesJs.games[i].gamePlayers[j].player.email == currentUser){
+
+                list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"<a href='/web/game.html?Gp="+gamesJs.games[i].gamePlayers[j].gamePlayerId+"'> Your game</a>"+"</li>";
+            }else if(gamesJs.games[i].gamePlayers.length < 2 &&
+                     gamesJs.games[i].gamePlayers[j].player.email != currentUser &&
+                     currentUser != null){
+
+                gameTojoin = gamesJs.games[i];
+                list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"<a href='/web/game.html?Gp="+gamesJs.games[i].gamePlayers[j].gamePlayerId+"'> Join game</a>"+"</li>";
+            }else{
+
+                list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"</li>";
+            }
         }
 
         list += "</ol></li>";
@@ -63,7 +76,13 @@ function fetchGames(){
     }).then(function(value) {
 
         gamesJs = value;
-        currentUser = gamesJs.player;
+        if(gamesJs.player != null){
+
+            currentUser = gamesJs.player.email;
+        }else{
+
+            currentUser = gamesJs.player;
+        }
         document.getElementById("gameList").innerHTML = gamesList();
         document.getElementById("gameTable").innerHTML = statisticsTable();
         document.getElementById("current").innerHTML = currentName();
@@ -110,13 +129,13 @@ function login() {
   $.post("/api/login",
          { username: username.value,
            password: password.value })
-   .done(function(){
+  .done(function(){
 
         fetchGames();
         //showForm();
         //location.reload();
-   })
-   .fail();
+  })
+  .fail();
 }
 
 function signup() {
@@ -141,6 +160,22 @@ function logout() {
 
         username.value = "";
         password.value = "";
+        fetchGames();
+        //showForm();
+        //location.reload();
+   })
+   .fail();
+}
+
+function joinGame() {
+
+  $.post("/api/games",
+         { currentUser,
+           gameTojoin,
+           })
+   .done(function(){
+
+        login();
         fetchGames();
         //showForm();
         //location.reload();

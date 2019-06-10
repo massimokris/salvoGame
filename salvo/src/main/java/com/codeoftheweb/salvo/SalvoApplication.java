@@ -40,12 +40,12 @@ public class SalvoApplication {
 		return (args) -> {
 			// save a couple of customers
 
-			Player playerOne = new Player("Jack", passwordEncoder.encode("1005map"));
-			Player playerTwo = new Player("Chloe", passwordEncoder.encode("map*"));
-			Player playerThree = new Player("Kim", passwordEncoder.encode("1005"));
-			Player playerFour = new Player("David", passwordEncoder.encode("map"));
-			Player playerFive = new Player("Massimo", passwordEncoder.encode("13167894"));
-			Player playerSix = new Player("Massimo", passwordEncoder.encode("massimo"));
+			Player playerOne = new Player("jack", passwordEncoder.encode("1005map"));
+			Player playerTwo = new Player("chloe", passwordEncoder.encode("map*"));
+			Player playerThree = new Player("kim", passwordEncoder.encode("1005"));
+			Player playerFour = new Player("mavid", passwordEncoder.encode("map"));
+			Player playerFive = new Player("massimo", passwordEncoder.encode("13167894"));
+			Player playerSix = new Player("celia", passwordEncoder.encode("massimo"));
 
 			playerRepository.save(playerOne);
 			playerRepository.save(playerTwo);
@@ -57,10 +57,12 @@ public class SalvoApplication {
 			Game gameOne = new Game(LocalDateTime.now());
 			Game gameTwo = new Game(LocalDateTime.now().plusHours(1));
 			Game gameThree = new Game(LocalDateTime.now().plusHours(2));
+			Game gameFour = new Game(LocalDateTime.now().plusHours(3));
 
 			gameRepository.save(gameOne);
 			gameRepository.save(gameTwo);
 			gameRepository.save(gameThree);
+			gameRepository.save(gameFour);
 
 			Score scoreOne = new Score(playerOne, gameOne, 3, LocalDateTime.now());
 			Score scoreTwo = new Score(playerOne, gameOne, 3, LocalDateTime.now());
@@ -82,6 +84,7 @@ public class SalvoApplication {
 			GamePlayer gamePlayerFour = new GamePlayer(playerFive, gameThree, LocalDateTime.now());
 			GamePlayer gamePlayerFive = new GamePlayer(playerFour, gameTwo, LocalDateTime.now());
 			GamePlayer gamePlayerSix = new GamePlayer(playerSix, gameThree, LocalDateTime.now());
+			GamePlayer gamePlayerSeven = new GamePlayer(playerSix, gameFour, LocalDateTime.now());
 
 			Ship shipOne = new Ship(ShipType.CARRIER, new ArrayList<>(Arrays.asList("a10","b10","c10","d10","e10")));
 			Ship shipTwo = new Ship(ShipType.PATROL_BOAT, new ArrayList<>(Arrays.asList("j1","j2")));
@@ -89,6 +92,7 @@ public class SalvoApplication {
 			Ship shipFour = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f1","f2","f3")));
 			Ship shipFive = new Ship(ShipType.SUBMARINE, new ArrayList<>(Arrays.asList("f3","g3","h3")));
 			Ship shipSix = new Ship(ShipType.DESTROYER, new ArrayList<>(Arrays.asList("g7","g8","g9")));
+			Ship shipSeven = new Ship(ShipType.CARRIER, new ArrayList<>(Arrays.asList("a10","b10","c10","d10","e10")));
 
 			Salvo salvoOne = new Salvo(1, new ArrayList<>(Arrays.asList("a10","b5")));
 			Salvo salvoTwo = new Salvo(2, new ArrayList<>(Arrays.asList("b5","c3")));
@@ -96,6 +100,7 @@ public class SalvoApplication {
 			Salvo salvoFour = new Salvo(4, new ArrayList<>(Arrays.asList("e3","d8")));
 			Salvo salvoFive = new Salvo(5, new ArrayList<>(Arrays.asList("a3","h10")));
 			Salvo salvoSix = new Salvo(6, new ArrayList<>(Arrays.asList("b1","g4")));
+			Salvo salvoSeven = new Salvo(1, new ArrayList<>(Arrays.asList("a10","b5")));
 
 			gamePlayerOne.addShip(shipOne);
 			gamePlayerTwo.addShip(shipTwo);
@@ -103,6 +108,7 @@ public class SalvoApplication {
 			gamePlayerFour.addShip(shipFour);
 			gamePlayerFive.addShip(shipFive);
 			gamePlayerSix.addShip(shipSix);
+			gamePlayerSeven.addShip(shipSeven);
 
 			gamePlayerOne.addSalvo(salvoOne);
 			gamePlayerTwo.addSalvo(salvoTwo);
@@ -110,6 +116,7 @@ public class SalvoApplication {
 			gamePlayerFour.addSalvo(salvoFour);
 			gamePlayerFive.addSalvo(salvoFive);
 			gamePlayerSix.addSalvo(salvoSix);
+			gamePlayerSeven.addSalvo(salvoSeven);
 
 			gamePlayerRepository.save(gamePlayerOne);
 			gamePlayerRepository.save(gamePlayerTwo);
@@ -117,6 +124,7 @@ public class SalvoApplication {
 			gamePlayerRepository.save(gamePlayerFour);
 			gamePlayerRepository.save(gamePlayerFive);
 			gamePlayerRepository.save(gamePlayerSix);
+			gamePlayerRepository.save(gamePlayerSeven);
 		};
 	}
 }
