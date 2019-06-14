@@ -115,10 +115,12 @@ function showForm(){
 
         document.getElementById('login-form').style.display="block";
         document.getElementById('logout-form').style.display="none";
+        document.getElementById('createGame').style.display="none";
     }else{
 
         document.getElementById('login-form').style.display="none";
         document.getElementById('logout-form').style.display="block";
+        document.getElementById('createGame').style.display="block";
     }
 }
 
@@ -181,4 +183,14 @@ function joinGame() {
         //location.reload();
    })
    .fail();
+}
+
+function createGame(){
+
+    $.post("/api/games")
+    .done(function(data){
+        return = "/web/game.html?gp="+data.gamePlayerId;
+        fetchGames();
+    })
+    .fail();
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -105,6 +106,25 @@ public class SalvoController {
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         }
 
+
+        return responseEntity;
+    }
+
+    @RequestMapping(path = "/games", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createGames(Authentication authentication){
+
+        ResponseEntity responseEntity;
+
+        if(isGuest(authentication)){
+
+            responseEntity = new ResponseEntity<>("Miss player", HttpStatus.FORBIDDEN);
+        }else{
+
+            Player player = playerRepository.findByUserName((authentication.getName()));
+            Game newGame = gameRepository.save(new Game(LocalDateTime.now()));
+            GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(player, newGame, LocalDateTime.now()));
+            responseEntity = new ResponseEntity<>(map("gamePlayerId", newGamePlayer.getId()), HttpStatus.FORBIDDEN);
+        }
 
         return responseEntity;
     }
