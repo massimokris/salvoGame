@@ -43,8 +43,9 @@ function setLocations(){
 function setNames(){
 
     var names = '';
-    if(gamePlayer.gamePlayers.length > 2){
-        if(game == gamePlayer.gamePlayers[0].gamePlayerId){
+
+    if(gamePlayer.gamePlayers.length > 1){
+        if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
 
             names += gamePlayer.gamePlayers[0].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[1].player.email;
         }else{
@@ -52,7 +53,7 @@ function setNames(){
         }
     }else{
 
-        names += " (you)  vs. ";
+        names += gamePlayer.gamePlayers.player.email +" (you)";
     }
 
     return names;
@@ -93,7 +94,7 @@ function setSalvos(){
     var g;
     var turn;
 
-    if(gamePlayer.gameId == gamePlayer.gamePlayers[0].gamePlayerId){
+    if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
 
         you = gamePlayer.Salvos[0];
         vs = gamePlayer.Salvos[1];
