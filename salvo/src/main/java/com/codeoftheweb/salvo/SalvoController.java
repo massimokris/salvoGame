@@ -123,7 +123,26 @@ public class SalvoController {
             Player player = playerRepository.findByUserName((authentication.getName()));
             Game newGame = gameRepository.save(new Game(LocalDateTime.now()));
             GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(player, newGame, LocalDateTime.now()));
-            responseEntity = new ResponseEntity<>(map("gamePlayerId", newGamePlayer.getId()), HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(map("gamePlayerId", newGamePlayer.getId()), HttpStatus.CREATED);
+        }
+
+        return responseEntity;
+    }
+
+    @RequestMapping(path = "/games/{gameId}/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable long gameId, Authentication authentication){
+
+        ResponseEntity responseEntity;
+
+        if(isGuest(authentication)){
+
+            responseEntity = new ResponseEntity<>("Miss player", HttpStatus.FORBIDDEN);
+        }else{
+
+            Player player = playerRepository.findByUserName((authentication.getName()));
+            Game game = gameRepository.findById(gameId);
+            GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(player, game, LocalDateTime.now()));
+            responseEntity = new ResponseEntity<>(map("gamePlayerId", newGamePlayer.getId()), HttpStatus.CREATED);
         }
 
         return responseEntity;

@@ -21,8 +21,8 @@ function gamesList(){
                      gamesJs.games[i].gamePlayers[j].player.email != currentUser &&
                      currentUser != null){
 
-                gameTojoin = gamesJs.games[i];
-                list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"<a href='/web/game.html?Gp="+gamesJs.games[i].gamePlayers[j].gamePlayerId+"'> Join game</a>"+"</li>";
+                gameTojoin = gamesJs.games[i].gameId;
+                list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"<button onclick='joinGame()'> Join game</button>"+"</li>";
             }else{
 
                 list += "<li>"+gamesJs.games[i].gamePlayers[j].player.email+"</li>";
@@ -171,16 +171,10 @@ function logout() {
 
 function joinGame() {
 
-  $.post("/api/games",
-         { currentUser,
-           gameTojoin,
-           })
-   .done(function(){
-
-        login();
+  $.post("/api/games/"+gameTojoin+"/players/")
+   .done(function(data){
+        window.location.href = "/web/game.html?Gp="+data.gamePlayerId;
         fetchGames();
-        //showForm();
-        //location.reload();
    })
    .fail();
 }
@@ -189,7 +183,7 @@ function createGame(){
 
     $.post("/api/games")
     .done(function(data){
-        return = "/web/game.html?gp="+data.gamePlayerId;
+        window.location.href = "/web/game.html?Gp="+data.gamePlayerId;
         fetchGames();
     })
     .fail();

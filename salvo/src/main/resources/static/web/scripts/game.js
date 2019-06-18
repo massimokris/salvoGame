@@ -43,14 +43,17 @@ function setLocations(){
 function setNames(){
 
     var names = '';
+    if(gamePlayer.gamePlayers.length > 2){
+        if(game == gamePlayer.gamePlayers[0].gamePlayerId){
 
-    if(game == gamePlayer.gamePlayers[0].gamePlayerId){
-
-        names += gamePlayer.gamePlayers[0].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[1].player.email;
+            names += gamePlayer.gamePlayers[0].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[1].player.email;
+        }else{
+            names += gamePlayer.gamePlayers[1].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[0].player.email;
+        }
     }else{
-        names += gamePlayer.gamePlayers[1].player.email +" (you)  vs.  "+ gamePlayer.gamePlayers[0].player.email;
-    }
 
+        names += " (you)  vs. ";
+    }
 
     return names;
 }
