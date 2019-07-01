@@ -134,6 +134,18 @@ function paint(x, y, g, t){
     }
 }
 
+function setShip(){
+
+    $.post({
+        url: "/api/games/players/"+game+"/ships",
+        data: JSON.stringify(data),
+        dataType: "text",
+        contentType: "application/json"})
+    .done(function(){
+        getG
+    })
+}
+
 //main function that shoots the gridstack.js framework and load the grid with the ships
 const loadGrid = function () {
     var options = {

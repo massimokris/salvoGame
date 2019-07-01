@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long>{
 
-
+    GamePlayer findById(long id);
 }
 
 
