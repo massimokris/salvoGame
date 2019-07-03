@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+
+        <!--JQUERY-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <title>Salvo</title>
+
+    </head>
+
+    <body>
+
+        <h1>Salvo</h1>
+
+        <form id="login-form" onsubmit="return false">
+            <label><input type="text" name="username" placeholder="Name" id="username"></label>
+            <label><input type="text" name="password" placeholder="Password" id="password"></label>
+            <button type="submit" class="btn btn-primary" onclick="login()">Login</button>
+            <button type="submit" class="btn btn-primary" onclick="signup()">Sign Up</button>
+        </form>
+
+        <h4 id="current"></h4>
+
+        <button type="submit" class="btn btn-primary" onclick="createGame()" id="createGame">New Game</button>
+
+        <form id="logout-form" onsubmit="return false">
+            <button type="submit" class="btn btn-primary" onclick="logout()">Log out</button>
+        </form>
+
+        <ol id="gameList"></ol>
+
+        <table id="gameTable"></table>
+
+        <table id="yourGameTable"></table>
+
+        <script src="scripts/games.js"></script>
+
+    </body>
+
+</html>

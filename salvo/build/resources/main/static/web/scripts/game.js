@@ -53,11 +53,12 @@ function setNames(){
         }
     }else{
 
-        names += "wait for other player";
+        names += gamePlayer.gamePlayers.player.email +" (you)";
     }
 
     return names;
 }
+
 
 
 fetch( "/api/game_view/"+game.Gp, {
@@ -133,76 +134,16 @@ function paint(x, y, g, t){
     }
 }
 
-fu/*nction getGrid(gpId){
-    $(".grid-head").html("");
-    $(".grid-body").html("");
-    $.get("/api/game_view/"+gpId).done(function(data){
-        gridData = data;
-        //getPlayers(gpId)
-        //getCurrentPlayerData();
-
-    })
-}
-
 function setShip(){
+
     $.post({
-        url: "/api/games/players/"+game.Gp+"/transformers",
+        url: "/api/games/players/"+game+"/ships",
         data: JSON.stringify(data),
         dataType: "text",
         contentType: "application/json"})
     .done(function(){
-        console.log("done");
-        getGrid(game.Gp);
+        getG
     })
-    .fail(function(){
-        console.log("fail");
-        $("#error-msg").html("fallo");
-    })
-}
-
-$("#place-btn").click(function(){
-  $(".grid-stack-item").each(function(){
-    var obj = new Object();
-    var arr = [];
-    if($(this).attr("data-gs-width") != "1"){
-      for(var i = 0; i < parseInt($(this).attr("data-gs-width")); i++){
-        arr.push(String.fromCharCode(parseInt($(this).attr("data-gs-y"))+65)+(parseInt($(this).attr("data-gs-x"))+i+1).toString());
-      }
-    } else{
-      for(var i = 0; i < parseInt($(this).attr("data-gs-height")); i++){
-        arr.push(String.fromCharCode(parseInt($(this).attr("data-gs-y"))+i+65)+(parseInt($(this).attr("data-gs-x"))+1).toString());
-      }
-    }
-
-    obj.type = $(this).children().attr("alt");
-    obj.cells = arr;
-    data.push(obj);
-  })
-  setShip();
-});*/
-
-function sendShips() {
-   let shipsData = []
-   var info = document.querySelectorAll(".grid-stack-item")
-   var ships = Array.from(info)
-   ships.forEach(ship => {
-       let shipData = {};
-       let shipLoc = [];
-       let height = ship.dataset.gsHeight;
-       let width = ship.dataset.gsWidth;
-       let x = parseInt(ship.dataset.gsX);
-       let y = parseInt(ship.dataset.gsY);
-       if (width > height) {
-           for (let i = 0; i < width; i++) {
-               shipLoc.push(getLocation(y) + (x + i + 1))
-           }
-       } else {
-           for (let i = 0; i < height; i++) {
-               shipLoc.push(getLocation(y + i) + (x + 1))
-           }
-       }
-   })
-   console.log(ships)
 }
 
 //main function that shoots the gridstack.js framework and load the grid with the ships

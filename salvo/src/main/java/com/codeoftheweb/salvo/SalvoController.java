@@ -9,10 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -166,6 +163,49 @@ public class SalvoController {
             responseEntity = new ResponseEntity<>("Ship add", HttpStatus.CREATED);
         }
 
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/games/players/{gamePlaterId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> addShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
+
+        ResponseEntity<Map<String, Object>> responseEntity;
+        Player player = playerRepository.findByUserName(authentication.getName());
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+        if(isGuest(authentication)){
+
+            responseEntity = new ResponseEntity<>(map("Error", "miss player"), HttpStatus.UNAUTHORIZED);
+        }else{
+
+            if(gamePlayer == null){
+
+                responseEntity = new ResponseEntity<>(map("error", "miss gameplayer"), HttpStatus.NOT_FOUND);
+            }else{
+
+                if(player.getId() != gamePlayer.getPlayer().getId()){
+
+                    responseEntity = new ResponseEntity<>(map("error", "different player"), HttpStatus.NOT_FOUND);
+                }else{
+
+                    if(gamePlayer.getShips().size() > 0){
+
+                        responseEntity = new ResponseEntity<>(map("error", "placed ships"), HttpStatus.NOT_FOUND);
+                    }else{
+
+                        if(ships.size() != 5){
+
+                            responseEntity = new ResponseEntity<>(map("error", "more/less ships"), HttpStatus.FORBIDDEN);
+                        }else{
+
+                            ships.stream().forEach(gamePlayer::addShip);
+                            gamePlayerRepository.save(gamePlayer);
+                            responseEntity = new ResponseEntity<>(map("success", "ships placed"), HttpStatus.CREATED);
+                        }
+                    }
+                }
+            }
+        }
         return responseEntity;
     }
 
