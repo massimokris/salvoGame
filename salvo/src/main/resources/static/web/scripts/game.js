@@ -59,30 +59,45 @@ function setNames(){
     return names;
 }
 
+function gameView(){
 
-fetch( "/api/game_view/"+game.Gp, {
-}).then(function(games) {
+    fetch( "/api/game_view/"+game.Gp, {
+    }).then(function(games) {
 
-    if (games.ok) {
+        if (games.ok) {
 
-        return games.json();
-    }
+            return games.json();
+        }
 
-    throw new Error(games.statusText);
-}).then(function(value) {
+        throw new Error(games.statusText);
+    }).then(function(value) {
 
-    gamePlayer = value;
-    setNames();
-    loadGrid();
-    createGrid(11, $(".grid-salvos"),"sa")
-    document.getElementById("names").innerHTML = setNames();
-    setSalvos();
-    paint(x, y, g, t);
+        gamePlayer = value;
 
-}).catch(function(error) {
+       // createGrid(11, $(".grid-ships"),"sh");
 
-    console.log( "Request failed: "+ error.message );
-});
+        if(gamePlayer.Ships.length > 0){
+
+            loadGrid(true);
+        }else{
+
+            loadGrid(false);
+        }
+
+        setNames();
+
+        createGrid(11, $(".grid-salvos"),"sa");
+        document.getElementById("names").innerHTML = setNames();
+        setSalvos();
+        paint(x, y, g, t);
+
+    }).catch(function(error) {
+
+        console.log( "Request failed: "+ error.message );
+    });
+}
+
+gameView();
 
 function setSalvos(){
 
@@ -133,80 +148,61 @@ function paint(x, y, g, t){
     }
 }
 
-fu/*nction getGrid(gpId){
-    $(".grid-head").html("");
-    $(".grid-body").html("");
-    $.get("/api/game_view/"+gpId).done(function(data){
-        gridData = data;
-        //getPlayers(gpId)
-        //getCurrentPlayerData();
 
-    })
-}
+function setShips(){
 
-function setShip(){
-    $.post({
-        url: "/api/games/players/"+game.Gp+"/transformers",
-        data: JSON.stringify(data),
-        dataType: "text",
-        contentType: "application/json"})
-    .done(function(){
-        console.log("done");
-        getGrid(game.Gp);
-    })
-    .fail(function(){
-        console.log("fail");
-        $("#error-msg").html("fallo");
-    })
-}
+   let shipsData = [];
+   var info = document.querySelectorAll(".grid-stack-item");
+   var ships = Array.from(info);
+   var data = [];
 
-$("#place-btn").click(function(){
-  $(".grid-stack-item").each(function(){
-    var obj = new Object();
-    var arr = [];
-    if($(this).attr("data-gs-width") != "1"){
-      for(var i = 0; i < parseInt($(this).attr("data-gs-width")); i++){
-        arr.push(String.fromCharCode(parseInt($(this).attr("data-gs-y"))+65)+(parseInt($(this).attr("data-gs-x"))+i+1).toString());
-      }
-    } else{
-      for(var i = 0; i < parseInt($(this).attr("data-gs-height")); i++){
-        arr.push(String.fromCharCode(parseInt($(this).attr("data-gs-y"))+i+65)+(parseInt($(this).attr("data-gs-x"))+1).toString());
-      }
-    }
-
-    obj.type = $(this).children().attr("alt");
-    obj.cells = arr;
-    data.push(obj);
-  })
-  setShip();
-});*/
-
-function sendShips() {
-   let shipsData = []
-   var info = document.querySelectorAll(".grid-stack-item")
-   var ships = Array.from(info)
    ships.forEach(ship => {
+
        let shipData = {};
        let shipLoc = [];
        let height = ship.dataset.gsHeight;
        let width = ship.dataset.gsWidth;
        let x = parseInt(ship.dataset.gsX);
        let y = parseInt(ship.dataset.gsY);
-       if (width > height) {
+       shipData.shipType = ship.id.toUpperCase();
+
+       if(width > height){
+
            for (let i = 0; i < width; i++) {
-               shipLoc.push(getLocation(y) + (x + i + 1))
+
+               shipLoc.push(String.fromCharCode(y + 65) + (x + i + 1));
            }
-       } else {
+       }else{
+
            for (let i = 0; i < height; i++) {
-               shipLoc.push(getLocation(y + i) + (x + 1))
+
+               shipLoc.push(String.fromCharCode((y + i) + 65) + (x + 1));
            }
        }
+
+       shipData.locations = shipLoc
+       data.push(shipData);
    })
-   console.log(ships)
+
+   $.post({
+           url: "/api/games/players/" + game.Gp + "/ships",
+           data: JSON.stringify(data),
+           dataType: "text",
+           contentType: "application/json"
+       })
+       .done(function (response, status, jqXHR) {
+           alert("Ships added: " + response);
+            location.reload();
+       })
+       .fail(function (jqXHR, status, httpError) {
+           alert("Failed to add ships: " + textStatus + " " + httpError);
+       })
 }
 
+
 //main function that shoots the gridstack.js framework and load the grid with the ships
-const loadGrid = function () {
+const loadGrid = function (isStatic) {
+
     var options = {
         //10 x 10 grid
         width: 10,
@@ -223,7 +219,7 @@ const loadGrid = function () {
         //allows the widget to occupy more than one column
         disableOneColumnMode: true,
         //false allows widget dragging, true denies it
-        staticGrid: false,
+        staticGrid: isStatic,
         //activates animations
         animate: true
     }
@@ -233,19 +229,45 @@ const loadGrid = function () {
 
     grid = $('#grid').data('gridstack');
 
-    setLocations();
+    createGrid(11, $(".grid-ships"),"sh");
 
-    createGrid(11, $(".grid-ships"),"sh")
+    if(!isStatic){
 
-    rotateShips("carrier", 5)
-    rotateShips("battleship", 4)
-    rotateShips("submarine",3)
-    rotateShips("destroyer", 3)
-    rotateShips("patrol_boat",2)
+           grid.addWidget($('<div id="carrier"><div class="grid-stack-item-content carrierHorizontal"></div><div/>'),
+               1, 0, 5, 1);
 
-    listenBusyCells()
-    $('.grid-stack').on('change', listenBusyCells)
+           grid.addWidget($('<div id="battleship"><div class="grid-stack-item-content battleshipHorizontal"></div><div/>'),
+               2, 1, 4, 1);
 
+           grid.addWidget($('<div id="submarine"><div class="grid-stack-item-content submarineHorizontal"></div><div/>'),
+               3, 2, 3, 1);
+
+           grid.addWidget($('<div id="destroyer"><div class="grid-stack-item-content destroyerHorizontal"></div><div/>'),
+               4, 3, 3, 1);
+
+           grid.addWidget($('<div id="patrol_boat"><div class="grid-stack-item-content patrol_boatHorizontal"></div><div/>'),
+               5, 4, 2, 1);
+
+           rotateShips("carrier", 5);
+           rotateShips("battleship", 4);
+           rotateShips("submarine", 3);
+           rotateShips("destroyer", 3);
+           rotateShips("patrol_boat", 2);
+       }else{
+
+           setLocations();
+       }
+
+       listenBusyCells('ships')
+       $('.grid-stack').on('change', function () {
+           listenBusyCells('ships')
+       })
+
+
+
+
+    /*listenBusyCells()
+    $('.grid-stack').on('change', listenBusyCells)*/
 
     //all the functionalities are explained in the gridstack github
     //https://github.com/gridstack/gridstack.js/tree/develop/doc
@@ -336,3 +358,5 @@ const listenBusyCells = function(){
         }
     }
 }
+
+

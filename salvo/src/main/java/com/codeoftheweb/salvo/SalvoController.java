@@ -146,27 +146,7 @@ public class SalvoController {
         return responseEntity;
     }
 
-    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<String> addShips(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody Ship ship){
-
-        ResponseEntity responseEntity;
-
-        if(isGuest(authentication)){
-
-            responseEntity = new ResponseEntity<>("Miss player", HttpStatus.FORBIDDEN);
-        }else{
-
-            //Player player = playerRepository.findByUserName((authentication.getName()));
-            GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId);
-            gamePlayer.addShip(ship);
-            gamePlayerRepository.save(gamePlayer);
-            responseEntity = new ResponseEntity<>("Ship add", HttpStatus.CREATED);
-        }
-
-        return responseEntity;
-    }
-
-    @RequestMapping(value = "/games/players/{gamePlaterId}/ships", method = RequestMethod.POST)
+    @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
 
         ResponseEntity<Map<String, Object>> responseEntity;
