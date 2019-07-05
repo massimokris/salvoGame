@@ -189,6 +189,45 @@ public class SalvoController {
         return responseEntity;
     }
 
+    @RequestMapping(value = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> addSalos(@PathVariable Long gamePlayerId, @RequestBody List<String> shots, Authentication authentication) {
+
+        ResponseEntity<Map<String, Object>> responseEntity;
+        Player player = playerRepository.findByUserName(authentication.getName());
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+        if(isGuest(authentication)){
+
+            responseEntity = new ResponseEntity<>(map("Error", "miss player"), HttpStatus.UNAUTHORIZED);
+        }else{
+
+            if(gamePlayer == null){
+
+                responseEntity = new ResponseEntity<>(map("error", "miss gameplayer"), HttpStatus.NOT_FOUND);
+            }else{
+
+                if(player.getId() != gamePlayer.getPlayer().getId()){
+
+                    responseEntity = new ResponseEntity<>(map("error", "different player"), HttpStatus.NOT_FOUND);
+                }else{
+
+                    if(shots.size() > 5 || shots.size() == 100){
+
+                        responseEntity = new ResponseEntity<>(map("error", "a lot salvos"), HttpStatus.NOT_FOUND);
+                    }else{
+
+                        int turn = gamePlayer.getSalvos().size() + 1;
+                        Salvo salvo = new Salvo(turn, shots);
+                        gamePlayer.addSalvo(salvo);
+                        gamePlayerRepository.save(gamePlayer);
+                        responseEntity = new ResponseEntity<>(map("success", "salvos"), HttpStatus.CREATED);
+                    }
+                }
+            }
+        }
+        return responseEntity;
+    }
+
     private Map<String, Object> map(String key, Object value){
 
         Map<String, Object> map = new HashMap<>();

@@ -74,8 +74,6 @@ function gameView(){
 
         gamePlayer = value;
 
-       // createGrid(11, $(".grid-ships"),"sh");
-
         if(gamePlayer.Ships.length > 0){
 
             loadGrid(true);
@@ -85,11 +83,13 @@ function gameView(){
         }
 
         setNames();
-
         createGrid(11, $(".grid-salvos"),"sa");
         document.getElementById("names").innerHTML = setNames();
         setSalvos();
+        addOnClick();
         paint(x, y, g, t);
+
+
 
     }).catch(function(error) {
 
@@ -98,6 +98,24 @@ function gameView(){
 }
 
 gameView();
+
+function addOnClick(){
+
+    var cells = Array.from(document.querySelectorAll(".sa-click")).forEach(x => x.addEventListener("click",
+    function(event){
+
+        var cell = event.target;
+        if(cell.classList.contains('select')){
+
+            $(cell).removeClass("select");
+        } else if(!cell.classList.contains('paint')){
+
+            $(cell).addClass("select");
+        }
+
+
+    }));
+}
 
 function setSalvos(){
 
@@ -108,7 +126,33 @@ function setSalvos(){
     var g;
     var turn;
 
-    if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
+
+    for(var i = 0; gamePlayer.gamePlayers.length; i++){
+
+        if(game.Gp == gamePlayer.gamePlayers[i].gamePlayerId){
+
+            you = gamePlayer.gamePlayerId.player.id;
+        }
+    }
+
+    for(var i = 0; gamePlayer.Salvos.length; i++){
+
+        x = +(gamePlayer.Salvos.locations[i].slice(1,3)) - 1;
+        y = gamePlayer.Salvos.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
+
+        if(you == gamePlayer.Salvos.playerId){
+
+            g = "sa";
+        }else{
+
+            g = "sh";
+        }
+
+        turn = gamePlayer.Salvos.turn;
+        paint(x, y, g, turn);
+    }
+
+    /*if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
 
         you = gamePlayer.Salvos[0];
         vs = gamePlayer.Salvos[1];
@@ -134,6 +178,49 @@ function setSalvos(){
         turn = vs.turn;
         paint(x, y, g, turn);
     }
+
+    if(gamePlayer.gamePlayers.length > 1){
+
+            if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
+
+                you = gamePlayer.Salvos[0];
+                vs = gamePlayer.Salvos[1];
+            }else{
+                you = gamePlayer.Salvos[1];
+                vs = gamePlayer.Salvos[0];
+            }
+
+            for(var i = 0; i < you.locations.length; i++){
+
+                    x = +(you.locations[i].slice(1,3)) - 1;
+                    y = you.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
+                    g = "sh";
+                    turn = you.turn;
+                    paint(x, y, g, turn);
+                }
+
+            for(var i = 0; i < you.locations.length; i++){
+
+                x = +(vs.locations[i].slice(1,3)) - 1;
+                y = vs.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
+                g = "sa";
+                turn = vs.turn;
+                paint(x, y, g, turn);
+            }
+        }else{
+
+            vs = gamePlayer.Salvos;
+
+            for(var i = 0; i < vs.locations.length; i++){
+
+                x = +(vs.locations[i].slice(1,3)) - 1;
+                y = vs.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
+                g = "sa";
+                turn = vs.turn;
+                paint(x, y, g, turn);
+            }
+        }*/
+
 }
 
 function paint(x, y, g, t){
@@ -196,6 +283,37 @@ function setShips(){
        })
        .fail(function (jqXHR, status, httpError) {
            alert("Failed to add ships: " + textStatus + " " + httpError);
+       })
+}
+
+function sendSalvos(){
+
+   let shipsData = [];
+   var info = document.querySelectorAll(".select");
+   var salvos = Array.from(info);
+   var data = [];
+
+   salvos.forEach(salvo => {
+
+       let y = salvo.dataset.y;
+       let x = salvo.dataset.x;
+       let cordenada = y + x;
+
+       data.push(cordenada);
+   })
+
+   $.post({
+           url: "/api/games/players/" + game.Gp + "/salvos",
+           data: JSON.stringify(data),
+           dataType: "text",
+           contentType: "application/json"
+       })
+       .done(function (response, status, jqXHR) {
+           alert("salvos send");
+           setSalvos();
+       })
+       .fail(function (jqXHR, status, httpError) {
+           alert("Failed to send salvos: " + textStatus + " " + httpError);
        })
 }
 
@@ -290,8 +408,13 @@ const createGrid = function(size, element, id){
         for(let j = 0; j < size; j++){
             let cell = document.createElement('DIV')
             cell.classList.add('grid-cell')
-            if(i > 0 && j > 0)
-            cell.id = id+`${i - 1}${ j - 1}`
+            if(i > 0 && j > 0){
+                cell.id = id+`${i - 1}${ j - 1}`
+                cell.classList.add(id+'-click')
+                cell.dataset.y = String.fromCharCode(i - 1 + 65)
+                cell.dataset.x = j - 1
+
+            }
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')
