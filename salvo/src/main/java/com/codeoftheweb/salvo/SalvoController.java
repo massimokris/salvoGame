@@ -37,12 +37,6 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-   /* @RequestMapping("/players")
-    public List<Player> getPlayers(){
-
-        return playerRepository.findAll();
-    }*/
-
     @RequestMapping("/games")
     public Map<String, Object> getGames(Authentication authentication){
 
@@ -131,14 +125,25 @@ public class SalvoController {
     public ResponseEntity<Map<String, Object>> joinGame(@PathVariable long gameId, Authentication authentication){
 
         ResponseEntity responseEntity;
+        Player player = playerRepository.findByUserName((authentication.getName()));
+        Game game = gameRepository.findById(gameId);
 
         if(isGuest(authentication)){
 
             responseEntity = new ResponseEntity<>("Miss player", HttpStatus.FORBIDDEN);
+        }else if(game == null) {
+
+            responseEntity = new ResponseEntity<>("Game doesn't exist", HttpStatus.FORBIDDEN);
+        }else if(player.getUserName() == playerRepository.findByUserName((authentication.getName())).getUserName()) {
+
+            responseEntity = new ResponseEntity<>("same player", HttpStatus.FORBIDDEN);
+        }else if(game.gamePlayers.size() > 1){
+
+            responseEntity = new ResponseEntity<>("a lot players", HttpStatus.FORBIDDEN);
         }else{
 
-            Player player = playerRepository.findByUserName((authentication.getName()));
-            Game game = gameRepository.findById(gameId);
+            //Player player = playerRepository.findByUserName((authentication.getName()));
+            //Game game = gameRepository.findById(gameId);
             GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(player, game, LocalDateTime.now()));
             responseEntity = new ResponseEntity<>(map("gamePlayerId", newGamePlayer.getId()), HttpStatus.CREATED);
         }
@@ -211,7 +216,7 @@ public class SalvoController {
                     responseEntity = new ResponseEntity<>(map("error", "different player"), HttpStatus.NOT_FOUND);
                 }else{
 
-                    if(shots.size() > 5 || shots.size() == 100){
+                    if(shots.size() != 5){
 
                         responseEntity = new ResponseEntity<>(map("error", "a lot salvos"), HttpStatus.NOT_FOUND);
                     }else{
@@ -235,12 +240,5 @@ public class SalvoController {
 
         return map;
     }
-
-   /* @RequestMapping("/gamePlayers")
-    public List<GamePlayer> getGamePlayers(){
-
-        return gamePlayerRepository.findAll();
-    }*/
-
 }
 

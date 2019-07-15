@@ -84,9 +84,9 @@ function gameView(){
 
         setNames();
         createGrid(11, $(".grid-salvos"),"sa");
+        addOnClick();
         document.getElementById("names").innerHTML = setNames();
         setSalvos();
-        addOnClick();
         paint(x, y, g, t);
 
 
@@ -127,29 +127,32 @@ function setSalvos(){
     var turn;
 
 
-    for(var i = 0; gamePlayer.gamePlayers.length; i++){
+    for(var i = 0; i < gamePlayer.gamePlayers.length; i++){
 
         if(game.Gp == gamePlayer.gamePlayers[i].gamePlayerId){
 
-            you = gamePlayer.gamePlayerId.player.id;
+            you = gamePlayer.gamePlayers[i].player.id;
         }
     }
 
-    for(var i = 0; gamePlayer.Salvos.length; i++){
+    for(var i = 0; i < gamePlayer.Salvos.length; i++){
 
-        x = +(gamePlayer.Salvos.locations[i].slice(1,3)) - 1;
-        y = gamePlayer.Salvos.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
+        for(var j = 0; j < gamePlayer.Salvos[i].locations.length; j++){
 
-        if(you == gamePlayer.Salvos.playerId){
+            x = +(gamePlayer.Salvos[i].locations[j].slice(1,3)) - 1;
+            y = gamePlayer.Salvos[i].locations[j].slice(0,1).toUpperCase().charCodeAt(0) - 65;
 
-            g = "sa";
-        }else{
+            if(you == gamePlayer.Salvos[i].playerId){
 
-            g = "sh";
+                g = "sa";
+            }else{
+
+                g = "sh";
+            }
+
+            turn = gamePlayer.Salvos[i].turn;
+            paint(x, y, g, turn);
         }
-
-        turn = gamePlayer.Salvos.turn;
-        paint(x, y, g, turn);
     }
 
     /*if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
@@ -310,7 +313,7 @@ function sendSalvos(){
        })
        .done(function (response, status, jqXHR) {
            alert("salvos send");
-           setSalvos();
+           location.reload();
        })
        .fail(function (jqXHR, status, httpError) {
            alert("Failed to send salvos: " + textStatus + " " + httpError);
