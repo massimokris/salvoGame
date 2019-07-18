@@ -125,4 +125,39 @@ public class GamePlayer {
         dto.put("Salvos", this.game.getGamePlayers().stream().flatMap(sgp -> sgp.getSalvos().stream().map(Salvo::salvoDTO)));
         return dto;
     }
+
+    /* public Enum<GameState> getGameState(){
+        Enum<GameState> gameStateEnum = GameState.UNDEFINED;
+        Optional<GamePlayer> opponentGamePlayer = this.getGame().getGamePlayers().stream().filter(gp -> gp.getId() != this.getId()).findFirst();
+        if (!opponentGamePlayer.isPresent()) {
+            gameStateEnum = GameState.WAIT_OPPONENT_JOIN;
+        } else{
+            if (this.getTransformers().isEmpty())
+                gameStateEnum = GameState.PLACE_TRANSFORMERS;
+            else if (opponentGamePlayer.get().getTransformers().isEmpty())
+                gameStateEnum = GameState.WAIT_OPPONENT_TRANSFORMERS;
+            else{
+                int myTurn = this.getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0);
+                int opponentTurn = opponentGamePlayer.get().getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0);
+                if (this.getId() < opponentGamePlayer.get().getId() && myTurn == opponentTurn)
+                    gameStateEnum = GameState.ENTER_SALVOES;
+                else if (this.getId() < opponentGamePlayer.get().getId() && myTurn > opponentTurn)
+                    gameStateEnum =  GameState.WAIT_OPPONENT_SALVOES;
+                else if (this.getId() > opponentGamePlayer.get().getId() && myTurn < opponentTurn)
+                    gameStateEnum = GameState.ENTER_SALVOES;
+                else if (this.getId() > opponentGamePlayer.get().getId() && myTurn == opponentTurn)
+                    gameStateEnum =  GameState.WAIT_OPPONENT_SALVOES;
+                List<Map<String, Object>> mySinks = this.getSinks(myTurn, opponentGamePlayer.get().getTransformers(), this.getSalvoes());
+                List<Map<String, Object>> opponentSinks = this.getSinks(opponentTurn, this.getTransformers(), opponentGamePlayer.get().getSalvoes());
+                if (myTurn == opponentTurn && mySinks.size() == 5 && mySinks.size() > opponentSinks.size())
+                    gameStateEnum = GameState.WIN;
+                else if (myTurn == opponentTurn && opponentSinks.size() == 5 && opponentSinks.size() > mySinks.size())
+                    gameStateEnum = GameState.LOSE;
+                else if (myTurn == opponentTurn && mySinks.size() == 5 && opponentSinks.size() == 5)
+                    gameStateEnum = GameState.DRAW;
+            }
+        }
+
+        return gameStateEnum;
+    }*/
 }
