@@ -88,6 +88,8 @@ function gameView(){
         document.getElementById("names").innerHTML = setNames();
         setSalvos();
         paint(x, y, g, t);
+        setHits();
+        paintHits(x, y, g);
 
 
 
@@ -120,7 +122,6 @@ function addOnClick(){
 function setSalvos(){
 
     var you;
-    var vs;
     var x;
     var y;
     var g;
@@ -154,76 +155,52 @@ function setSalvos(){
             paint(x, y, g, turn);
         }
     }
+}
 
-    /*if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
+function setHits(){
 
-        you = gamePlayer.Salvos[0];
-        vs = gamePlayer.Salvos[1];
-    }else{
-        you = gamePlayer.Salvos[1];
-        vs = gamePlayer.Salvos[0];
+    var you;
+    var x;
+    var y;
+    var g;
+    var turn;
+
+
+    for(var i = 0; i < gamePlayer.gamePlayers.length; i++){
+
+        if(game.Gp == gamePlayer.gamePlayers[i].gamePlayerId){
+
+            you = gamePlayer.gamePlayers[i].player.id;
+        }
     }
 
-    for(var i = 0; i < you.locations.length; i++){
+    for(var i = 0; i < gamePlayer.Salvos.length; i++){
 
-        x = +(you.locations[i].slice(1,3)) - 1;
-        y = you.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
-        g = "sh";
-        turn = you.turn;
-        paint(x, y, g, turn);
-    }
+        for(var j = 0; j < gamePlayer.Salvos[i].hits.length; j++){
 
-    for(var i = 0; i < you.locations.length; i++){
+            x = +(gamePlayer.Salvos[i].hits[j].slice(1,3)) - 1;
+            y = gamePlayer.Salvos[i].hits[j].slice(0,1).toUpperCase().charCodeAt(0) - 65;
 
-        x = +(vs.locations[i].slice(1,3)) - 1;
-        y = vs.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
-        g = "sa";
-        turn = vs.turn;
-        paint(x, y, g, turn);
-    }
+            if(you == gamePlayer.Salvos[i].playerId){
 
-    if(gamePlayer.gamePlayers.length > 1){
-
-            if(game.Gp == gamePlayer.gamePlayers[0].gamePlayerId){
-
-                you = gamePlayer.Salvos[0];
-                vs = gamePlayer.Salvos[1];
+                g = "sa";
             }else{
-                you = gamePlayer.Salvos[1];
-                vs = gamePlayer.Salvos[0];
+
+                g = "sh";
             }
 
-            for(var i = 0; i < you.locations.length; i++){
+            turn = gamePlayer.Salvos[i].turn;
+            paintHits(x, y, g);
+        }
+    }
+}
 
-                    x = +(you.locations[i].slice(1,3)) - 1;
-                    y = you.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
-                    g = "sh";
-                    turn = you.turn;
-                    paint(x, y, g, turn);
-                }
+function paintHits(x, y, g){
 
-            for(var i = 0; i < you.locations.length; i++){
+    var location =  g + y + x;
 
-                x = +(vs.locations[i].slice(1,3)) - 1;
-                y = vs.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
-                g = "sa";
-                turn = vs.turn;
-                paint(x, y, g, turn);
-            }
-        }else{
-
-            vs = gamePlayer.Salvos;
-
-            for(var i = 0; i < vs.locations.length; i++){
-
-                x = +(vs.locations[i].slice(1,3)) - 1;
-                y = vs.locations[i].slice(0,1).toUpperCase().charCodeAt(0) - 65;
-                g = "sa";
-                turn = vs.turn;
-                paint(x, y, g, turn);
-            }
-        }*/
-
+    document.getElementById(location).classList.removeClass("paint");
+    document.getElementById(location).classList.add("paintHits");
 }
 
 function paint(x, y, g, t){
@@ -316,7 +293,7 @@ function sendSalvos(){
            location.reload();
        })
        .fail(function (jqXHR, status, httpError) {
-           alert("Failed to send salvos: " + textStatus + " " + httpError);
+           alert("Failed to send salvos: " + status + " " + httpError);
        })
 }
 
@@ -415,7 +392,7 @@ const createGrid = function(size, element, id){
                 cell.id = id+`${i - 1}${ j - 1}`
                 cell.classList.add(id+'-click')
                 cell.dataset.y = String.fromCharCode(i - 1 + 65)
-                cell.dataset.x = j - 1
+                cell.dataset.x = j
 
             }
 

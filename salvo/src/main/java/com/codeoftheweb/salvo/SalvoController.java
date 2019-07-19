@@ -127,6 +127,7 @@ public class SalvoController {
         ResponseEntity responseEntity;
         Player player = playerRepository.findByUserName((authentication.getName()));
         Game game = gameRepository.findById(gameId);
+        GamePlayer enemy = game.getGamePlayers().stream().findFirst().orElse(null);
 
         if(isGuest(authentication)){
 
@@ -134,7 +135,7 @@ public class SalvoController {
         }else if(game == null) {
 
             responseEntity = new ResponseEntity<>("Game doesn't exist", HttpStatus.FORBIDDEN);
-        }else if(player.getUserName() == playerRepository.findByUserName((authentication.getName())).getUserName()) {
+        }else if(player.getUserName() == enemy.getPlayer().getUserName()) {
 
             responseEntity = new ResponseEntity<>("same player", HttpStatus.FORBIDDEN);
         }else if(game.gamePlayers.size() > 1){
@@ -225,6 +226,9 @@ public class SalvoController {
                         Salvo salvo = new Salvo(turn, shots);
                         gamePlayer.addSalvo(salvo);
                         gamePlayerRepository.save(gamePlayer);
+
+
+
                         responseEntity = new ResponseEntity<>(map("success", "salvos"), HttpStatus.CREATED);
                     }
                 }

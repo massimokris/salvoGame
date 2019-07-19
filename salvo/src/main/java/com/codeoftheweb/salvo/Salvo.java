@@ -41,7 +41,7 @@ public class Salvo {
         this.id = id;
     }
 
-    public long getTurn() {
+    public int getTurn() {
         return turn;
     }
 
@@ -79,7 +79,7 @@ public class Salvo {
         return hits;
     }
 
-    private  List<Map<String, Object>> getSinks(){
+    public  List<Map<String, Object>> getSinks(){
         List<String> allLocations=new ArrayList<>();
         List<Map<String, Object>> sinks = new ArrayList<>();
         this.getGamePlayer().getSalvos().stream().filter(salvo -> salvo.getTurn() <= this.getTurn()).forEach(salvo -> allLocations.addAll(salvo.getLocations()));

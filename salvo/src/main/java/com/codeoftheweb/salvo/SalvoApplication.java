@@ -102,6 +102,7 @@ public class SalvoApplication {
 			Salvo salvoSix = new Salvo(6, new ArrayList<>(Arrays.asList("b1","g4")));
 			Salvo salvoSeven = new Salvo(1, new ArrayList<>(Arrays.asList("a10","b5")));
 
+
 			gamePlayerOne.addShip(shipOne);
 			gamePlayerTwo.addShip(shipTwo);
 			gamePlayerThree.addShip(shipThree);
